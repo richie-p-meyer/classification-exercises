@@ -10,7 +10,8 @@ def prep_iris(df):
     return df
 
 def prep_titanic(df):
-    df = df.drop(columns=['passenger_id','deck','Unnamed: 0'])
+    df = df.drop(columns=['passenger_id','deck','Unnamed: 0','embarked','class','age'])
+    df = df.dropna()
     dummies = df.select_dtypes(include='object').columns
     dummies = pd.get_dummies(df[dummies])
     df = pd.concat([df, dummies], axis=1)
@@ -18,13 +19,13 @@ def prep_titanic(df):
 
 def prep_telco(df):
     df = df.drop(columns=['Unnamed: 0','payment_type_id', 'internet_service_type_id', 'contract_type_id','customer_id'])
-    df['total_charges'] = pd.to_numeric(df['total_charges'].str.replace(' ',''))
+    df['total_charges'] = (df.total_charges + '0').astype('float')
     dummies = df.select_dtypes(include='object').columns
     dummies = pd.get_dummies(df[dummies])
     df = pd.concat([df, dummies], axis=1)
     return df
 
-def split_data(df):
-    train, val_test = train_test_split(df,test_size=.2,random_state=21)
-    validate, test = train_test_split(val_test,test_size=.3,random_state=21)
+def split_data(df, target = ''):
+    train, val_test = train_test_split(df,test_size=.2,random_state=21,stratify=df[target])
+    validate, test = train_test_split(val_test,test_size=.3,random_state=21,stratify=val_test[target])
     return train, validate, test
