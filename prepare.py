@@ -10,7 +10,7 @@ def prep_iris(df):
     return df
 
 def prep_titanic(df):
-    df = df.drop(columns=['passenger_id','deck','Unnamed: 0','embarked','class','age'])
+    df = df.drop(columns=['passenger_id','deck','Unnamed: 0','embarked','class','age','embarked'])
     df = df.dropna()
     dummies = df.select_dtypes(include='object').columns
     dummies = pd.get_dummies(df[dummies])
