@@ -6,15 +6,16 @@ import pandas as pd
 def prep_iris(df):
     df = df.drop(columns=['species_id','measurement_id','Unnamed: 0'])
     df.rename(columns={'species_name':'species'},inplace = True)
-    dummies = pd.get_dummies(df[['species']])
+    dummies = pd.get_dummies(df[['species']],drop_first=True)
     df = pd.concat([df, dummies], axis=1)
     return df
 
 def prep_titanic(df):
-    df = df.drop(columns=['passenger_id','deck','Unnamed: 0','embarked','class','age','embarked'])
+    df = df.drop(columns=['passenger_id','deck','Unnamed: 0','embarked','class'])
     df = df.dropna()
     dummies = df.select_dtypes(include='object').columns
-    dummies = pd.get_dummies(df[dummies])
+    dummies = pd.get_dummies(df[dummies],drop_first=True)
+    df = df.drop(columns=['sex','embark_town'])
     df = pd.concat([df, dummies], axis=1)
     return df
 
@@ -22,7 +23,7 @@ def prep_telco(df):
     df = df.drop(columns=['Unnamed: 0','payment_type_id', 'internet_service_type_id', 'contract_type_id','customer_id'])
     df['total_charges'] = (df.total_charges + '0').astype('float')
     dummies = df.select_dtypes(include='object').columns
-    dummies = pd.get_dummies(df[dummies])
+    dummies = pd.get_dummies(df[dummies],drop_first=True)
     df = pd.concat([df, dummies], axis=1)
     return df
 
